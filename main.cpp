@@ -10,7 +10,7 @@ int main(int argc, char *argv[]) {
     std::string outputFileName{};
     // parsing arguments
     switch (argc) {
-        case 3: {
+        case 4: {
             // read size;
             int sz {};
             if (sscanf(argv[3], "%d", &sz) != 1) {
@@ -20,7 +20,7 @@ int main(int argc, char *argv[]) {
             blockSize *= sz;
             // fallthrough
         }
-        case 2:
+        case 3:
             // read input file, read output file
             inputFileName = argv[1];
             outputFileName = argv[2];
@@ -30,18 +30,14 @@ int main(int argc, char *argv[]) {
             return -1;
     }
 
-    // check input file exists
-    FILE *tmpFile = fopen64(inputFileName.c_str(), "r");
-    if (tmpFile) {
-        fclose(tmpFile);
+    Hasher hasher(inputFileName, outputFileName, blockSize);
+    try {
+        hasher.run();
     }
-    else {
-        std::cerr << "No file named '" << inputFileName << "'" << std::endl;
+    catch (std::exception &e) {
+        std::cerr << e.what() << std::endl;
         return -1;
     }
-
-    Hasher hasher(inputFileName, outputFileName, blockSize);
-
 
 
     return 0;

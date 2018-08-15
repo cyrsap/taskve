@@ -3,6 +3,17 @@
 
 #include <string>
 #include <memory>
+#include <vector>
+#include <mutex>
+
+struct Crc {
+    uint32_t value;
+    size_t counter;
+    bool operator<(const Crc &rhs)
+    {
+        return counter < rhs.counter;
+    }
+};
 
 class Hasher {
 public:
@@ -21,6 +32,12 @@ private:
     using FilePtr = std::unique_ptr<FILE, decltype(&fclose)>;
     FilePtr m_inFile;
     FilePtr m_outFile;
+
+    using DataType = std::vector<uint8_t> ;
+    std::mutex m_lock;
+    std::vector<Crc> m_resultData;
+
+    void dropResult();
 };
 
 
