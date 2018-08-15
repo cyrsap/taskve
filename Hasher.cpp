@@ -34,7 +34,7 @@ void Hasher::run()
     size_t counter = 0;
     while (!feof(m_inFile.get())) {
         std::vector<uint8_t> data(m_blockSize);
-        auto dataRead = fread(data.data(), m_blockSize, 1, m_inFile.get());
+        auto dataRead = fread(data.data(), 1, m_blockSize, m_inFile.get());
         boost::asio::post(pool, [&, aData{std::move(data)}, counter, dataRead] {
             boost::crc_32_type crc;
             crc.process_bytes(aData.data(), dataRead);
